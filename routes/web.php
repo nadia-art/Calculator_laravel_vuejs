@@ -15,6 +15,8 @@ use App\Http\Controllers\CalculatorController;
 |
 */
 
+Route::get('/', function () {
+    return redirect()->route('calculator');
+});
 
-
-Route::get('/calculator' , [CalculatorController::class, 'index']);
+Route::get('/calculator' , [CalculatorController::class, 'index'])->name('calculator');
