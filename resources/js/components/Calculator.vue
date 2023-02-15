@@ -39,11 +39,22 @@ export default {
       this.current = '';
     },
     sign() {
-      this.current = this.current.charAt(0) === '-' ? 
-        this.current.slice(1) : `-${this.current}`;
+      let payload = {
+					previous: this.current,
+          current: -1,
+          operator : "times",
+				};
+
+			 this.calcul(payload);
     },
     percent() {
-      this.current = `${parseFloat(this.current) / 100}`;
+      let payload = {
+					previous: this.current,
+          current: 100 ,
+          operator : "divide",
+				};
+
+			 this.calcul(payload);
     },
     append(number) {
       if (this.operatorClicked) {
@@ -62,28 +73,48 @@ export default {
       this.operatorClicked = true;
     },
     divide() {
-      this.operator = (a, b) => a / b;
-      this.setPrevious();
+      // this.operator = (a, b) => a / b;
+      this.operator="divide";
+       this.setPrevious();
     },
     times() {
-      this.operator = (a, b) => a * b;
+      // this.operator = (a, b) => a * b;
+      this.operator="times";
       this.setPrevious();
     },
     minus() {
-      this.operator = (a, b) => a - b;
+      // this.operator = (a, b) => a - b;
+      // this.setPrevious();
+      this.operator="minus";
       this.setPrevious();
     },
     add() {
-      this.operator = (a, b) => a + b;
+      // this.operator = (a, b) => a + b;
+      // this.setPrevious();
+      this.operator="add";
       this.setPrevious();
     },
-    equal() {
-      this.current = `${this.operator(
-        parseFloat(this.current), 
-        parseFloat(this.previous)
-      )}`;
-      this.previous = null;
+  
+   equal() {
+      	let payload = {
+					previous: this.previous,
+          current: this.current,
+          operator : this.operator,
+				};
+
+			 this.calcul(payload);
+    },
+       async calcul(payload) {
+      
+				try {
+					let data = (await axios.post('/api/calculator', payload)).data;
+					this.current = data.result;
+          this.previous = null;
+				} catch(error) {
+					this.error = error.response.data;
+				}
     }
+
   }
 }
 </script>
